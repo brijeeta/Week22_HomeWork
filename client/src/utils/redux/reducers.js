@@ -12,10 +12,17 @@ import {
   TOGGLE_CART,
 } from "./actions";
 
-// Let's not forget to include the ...state operator to preserve everything else on state.
-// Then we can update the cart property to add action.product to the end of the array.
-export const reducer = (state, action) => {
+const initialState = {
+  products: [],
+  cart: [],
+  cartOpen: false,
+  categories: [],
+  currentCategory: "",
+};
+
+export const reducer = (state = initialState, action) => {
   switch (action.type) {
+    // if action type value is the value of `UPDATE_PRODUCTS`, return a new state object with an updated products array
     case UPDATE_PRODUCTS:
       return {
         ...state,
@@ -33,11 +40,9 @@ export const reducer = (state, action) => {
         ...state,
         currentCategory: action.currentCategory,
       };
-
     case ADD_TO_CART:
       return {
         ...state,
-        // set cartOpen to true so that users can immediately view the cart with the newly added item, if it's not already open.
         cartOpen: true,
         cart: [...state.cart, action.product],
       };
@@ -45,12 +50,13 @@ export const reducer = (state, action) => {
     case ADD_MULTIPLE_TO_CART:
       return {
         ...state,
-        cartOpen: true,
         cart: [...state.cart, ...action.products],
       };
 
     case REMOVE_FROM_CART:
-      let newState = state.cart.filter((product) => product._id !== action._id);
+      let newState = state.cart.filter((product) => {
+        return product._id !== action._id;
+      });
 
       return {
         ...state,
@@ -82,21 +88,12 @@ export const reducer = (state, action) => {
         ...state,
         cartOpen: !state.cartOpen,
       };
-      
+
     default:
       return state;
   }
 };
 
-// This function, useProductReducer(), will be used to help initialize our global state object
-// and then provide us with the functionality for updating that state
-// by automatically running it through our custom reducer() function.
-// Think of this as a more in-depth way of using the useState() Hook we've used so much.
-// The useState() Hook is great for managing simpler amounts of state,
-// like form field values and the status of a button being clicked.
-// The useReducer() Hook is meant specifically for managing a greater level of state,
-// like we're doing now. We're going to put it to use next,
-// when we learn more about how all of this comes together.
 export const useProductReducer = (initialState) => {
   return useReducer(reducer, initialState);
 };

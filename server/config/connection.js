@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+// Enable access to .env variables
+require('dotenv').config();
 
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/mernshopping', {
   useNewUrlParser: true,
